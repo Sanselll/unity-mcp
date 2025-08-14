@@ -146,23 +146,12 @@ The server exposes several MCP endpoints:
 
 ## 🧪 Development & Testing
 
-### Test Scripts
+### Testing
 
-Several test scripts are included for development:
-
-```bash
-# Test server connectivity
-./tests/test_server.sh
-
-# Test C# compilation features
-./tests/test_compilation.sh
-
-# Test dynamic tool creation
-./tests/test_dynamic_tools.sh
-
-# Run comprehensive diagnostics
-./tests/diagnose.sh
-```
+Test the installation by:
+1. Installing the package in Unity
+2. Configuring Claude Code with the server URL
+3. Using the `execute_query` tool to run simple C# code
 
 ### Debugging
 
