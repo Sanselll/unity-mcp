@@ -26,11 +26,13 @@ src/scripts/custom/*
 .env
 .env.local
 
-# Claude Code
+# Claude Code and MCP
 .claude/
 .claude_history
 claude_*.log
 claude-code.log
+.mcp.json
+*-mcp-config.json
 
 # SSH keys (if accidentally created in project)
 id_*
