@@ -1,121 +1,81 @@
-# Unity MCP Bridge
+# Unity MCP
 
-Enable Claude Code to interact with Unity Editor through the Model Context Protocol (MCP).
+Enable Claude Code to interact directly with Unity Editor through the Model Context Protocol (MCP).
 
-## Features
+## Architecture
 
-- 🚀 **One-Click Setup** - Automated installation and configuration
-- 🔄 **Dynamic Scripts** - Claude can write and register Unity tools on-the-fly
-- 🎮 **Full Unity Control** - Play mode, scenes, GameObjects, and more
-- 📦 **Self-Contained** - Everything included in the Unity package
-- ⚡ **Hot Reload** - Scripts compile and register without restarts
+Unity MCP runs a pure C# HTTP server (port 9876) within Unity Editor itself, implementing the MCP JSON-RPC protocol. No external dependencies required.
 
-## Quick Start
+**System Components:**
+- **MCPServer.cs** - HTTP MCP server running on port 9876
+- **DynamicToolManager.cs** - Manages tools defined in JSON files
+- **UnityDynamicCompiler.cs** - Compiles and executes C# code queries
 
-### Installation
+## Installation
 
-#### Option 1: Unity Package Manager (Recommended)
+1. Copy the `com.mcp.unity` package to your project's `Packages/` folder
+2. Unity will automatically import the package
+3. The MCP server starts automatically when Unity loads
 
-1. Open Unity Package Manager (Window > Package Manager)
-2. Click the "+" button and select "Add package from git URL"
-3. Enter: `https://github.com/yourusername/unity-mcp.git#package`
-4. Click "Add"
+## Configuration
 
-#### Option 2: Local Installation
-
-1. Download the package
-2. Copy `com.mcp.unity` folder to your project's `Packages` folder
-
-### Setup
-
-After installation, the Setup Wizard will open automatically. If not:
-
-1. Go to **Tools > Unity MCP > Setup Wizard**
-2. Click **Install MCP Server** (requires Node.js)
-3. Click **Configure Claude Code**
-4. Click **Start Unity Bridge**
-
-That's it! Claude Code can now interact with your Unity project.
-
-## Menu Options
-
-- **Tools > Unity MCP > Setup Wizard** - Main configuration window
-- **Tools > Unity MCP > Start/Stop MCP Server** - Control the bridge server
-- **Tools > Unity MCP > Configure Claude Code** - Auto-configure Claude settings
-- **Tools > Unity MCP > Open Scripts Folder** - View Claude-generated scripts
-- **Tools > Unity MCP > Documentation** - Open online documentation
-
-## How It Works
-
+Configure Claude Code to connect:
+```bash
+claude mcp add --transport http unity http://localhost:9876
 ```
-Claude Code <--> MCP Server <--> Unity Bridge <--> Unity Editor
-                     |
-                Dynamic Scripts
-```
-
-1. Unity Bridge runs a TCP server in the Editor
-2. MCP Server connects to Unity and Claude Code
-3. Claude can create scripts that become MCP tools instantly
-4. All scripts are stored within the package for portability
 
 ## Available Tools
 
 ### Core Tools
-- `create_unity_script` - Create new Unity scripts dynamically
-- `unity_play_mode` - Control play/pause/stop
-- `unity_scene` - Load/save/create scenes
-- `unity_gameobject` - Create/modify GameObjects
-- `unity_console` - Read Unity console logs
-- `execute_unity_script` - Run any registered script
+- `execute_query` - Execute arbitrary C# code in Unity
+- `get_logs` - Retrieve Unity console logs (errors, warnings, logs)
+- `clear_logs` - Clear Unity console
+- `create_gameobject` - Create GameObjects with primitive types
+- `list_scene_objects` - List GameObjects in current scene
+- `list_scenes` - List all scenes in project
+- `find_object` - Find GameObjects by name pattern
+- `focus_unity` - Bring Unity Editor to foreground
+- `recompile` - Trigger script compilation
+- `play_mode` - Control play/pause/stop
 
-### Dynamic Scripts
-Claude can create custom tools by writing C# scripts:
+### Tool System
 
-```csharp
-[MCPTool("my_custom_tool")]
-public class MyCustomTool : IUnityScript {
-    public object Execute(Dictionary<string, object> parameters) {
-        // Your Unity code here
-        return "Result";
-    }
+Tools are defined as JSON files in:
+- `Editor/Tools/Default/` - Built-in tools
+- `Editor/Tools/Custom/` - Custom tool definitions
+
+JSON tool structure:
+```json
+{
+  "name": "tool_name",
+  "description": "Tool description", 
+  "queryTemplate": "C# code with {{parameter}} placeholders",
+  "inputSchema": {
+    "type": "object",
+    "properties": { /* parameter definitions */ }
+  }
 }
 ```
+
+## Unity Menu
+
+Access via **Tools > Unity MCP**:
+- Start/Stop/Restart Server
+- View Server Status
 
 ## Requirements
 
 - Unity 2020.3 or later
-- Node.js 18+ (for MCP server)
+- Newtonsoft.Json package (auto-installed)
 - Claude Code desktop app
 
-## Troubleshooting
+## Server Status
 
-### Bridge Not Connecting
-1. Check Unity Console for "[MCP Bridge] Server started"
-2. Ensure port 12345 is not blocked
-3. Restart Unity Editor
-
-### MCP Server Not Installing
-1. Verify Node.js is installed: `node --version`
-2. Check npm: `npm --version`
-3. Run Setup Wizard again
-
-### Scripts Not Compiling
-1. Check Unity Console for errors
-2. Ensure script implements `IUnityScript`
-3. Verify using statements are included
-
-## Settings
-
-Settings are saved in Unity Editor Preferences:
-- **Auto-start server** - Start bridge when Unity opens
-- **Server port** - TCP port (default: 12345)
-- **Verbose logging** - Enable detailed logs
-
-## Support
-
-- [Documentation](https://github.com/yourusername/unity-mcp)
-- [Issues](https://github.com/yourusername/unity-mcp/issues)
+The server provides compilation-aware responses:
+- Returns error code -32000 when Unity is compiling
+- Includes `/status` endpoint for health checks
 
 ## License
 
-MIT
+Copyright © 2024 Volodymyr Bouland
+MIT License
