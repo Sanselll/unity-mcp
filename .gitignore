@@ -25,3 +25,18 @@ src/scripts/custom/*
 # Environment
 .env
 .env.local
+
+# Claude Code
+.claude/
+.claude_history
+claude_*.log
+claude-code.log
+
+# SSH keys (if accidentally created in project)
+id_*
+*.pub
+github
+github.pub
+
+# Temporary files
+*.tmp
