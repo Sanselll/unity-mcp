@@ -7,7 +7,7 @@ A Unity Editor plugin that implements a Model Context Protocol (MCP) server, ena
 ## 🚀 Features
 
 - **Direct HTTP Communication**: No bridge scripts or external processes needed
-- **Dynamic Tool System**: JSON-defined tools with hot-reloading capability
+- **Dynamic Tool System**: 10+ built-in tools with JSON-defined custom tools and hot-reloading
 - **C# Code Execution**: Execute arbitrary C# code directly in Unity Editor
 - **Real-time Unity Control**: Play/pause, scene manipulation, log access
 - **Compilation Safety**: Detects Unity compilation state and responds appropriately
@@ -96,7 +96,8 @@ return $"Created cube at position {cube.transform.position}";
 
 The system includes several pre-built tools:
 
-- **`get_logs`** - Retrieve Unity console logs (errors, warnings, info)
+- **`execute_query`** - Execute arbitrary C# code in Unity Editor
+- **`get_logs`** - Retrieve Unity console logs (errors, warnings, info)  
 - **`clear_logs`** - Clear Unity console
 - **`list_scene_objects`** - List GameObjects in current scene
 - **`list_scenes`** - List all scenes in project
@@ -104,6 +105,8 @@ The system includes several pre-built tools:
 - **`focus_unity`** - Bring Unity window to foreground
 - **`recompile`** - Trigger script recompilation
 - **`play_mode`** - Control Unity play/pause/stop
+- **`find_object`** - Find GameObjects by name pattern
+- **`remove_tool`** - Remove custom tools
 
 ### Example Workflows
 
