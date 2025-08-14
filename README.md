@@ -36,14 +36,14 @@ Claude Code ←→ HTTP (Port 9876) ←→ Unity MCP Server ←→ Unity Editor 
 
 1. Open Unity Package Manager (`Window > Package Manager`)
 2. Click the `+` button and select `Add package from git URL`
-3. Enter: `https://github.com/yourusername/unity-mcp.git?path=UnityPackage/com.mcp.unity`
+3. Enter: `https://github.com/Sanselll/unity-mcp.git?path=UnityPackage/com.mcp.unity`
 4. Click `Add`
 
 ### Method 2: Local Installation
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/unity-mcp.git
+   git clone https://github.com/Sanselll/unity-mcp.git
    cd unity-mcp
    ```
 
@@ -131,7 +131,7 @@ Ask Claude: "Start play mode and create a sphere at the player position"
 
 ### Manual Tool Extension
 
-Developers can extend the system by manually creating JSON tool files in the `Tools/Custom/` directory. See the [Tool Development](#-tool-development) section for details on the JSON format and hot-reloading capabilities.
+Developers can extend the system by manually creating JSON tool files in the `Tools/Custom/` directory. See the [📝 Tool Development](#-tool-development) section for details on the JSON format and hot-reloading capabilities.
 
 ### API Endpoints
 
@@ -248,14 +248,14 @@ We welcome contributions! Please:
 
 1. Fork the repository
 2. Create a feature branch
-3. Add tests for new functionality
+3. Ensure code quality and documentation
 4. Submit a pull request
 
 ### Development Setup
 1. Clone the repository
 2. Open in Unity 2022.3+
 3. Install dependencies via Package Manager
-4. Run test scripts to verify setup
+4. Test with a Unity project to verify functionality
 
 ## 📄 License
 
