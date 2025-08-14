@@ -1,0 +1,38 @@
+{
+  "name": "create_gameobject",
+  "description": "Create a GameObject with specified properties",
+  "queryTemplate": "\nvar goName = \"{{name}}\";\nvar position = new UnityEngine.Vector3({{x}}, {{y}}, {{z}});\nUnityEngine.GameObject go = null;\n\nvar primitiveType = \"{{primitiveType}}\";\nif (!string.IsNullOrEmpty(primitiveType) && primitiveType != \"None\")\n{\n    UnityEngine.PrimitiveType type;\n    if (System.Enum.TryParse<UnityEngine.PrimitiveType>(primitiveType, out type))\n    {\n        go = UnityEngine.GameObject.CreatePrimitive(type);\n        go.name = goName;\n        go.transform.position = position;\n    }\n    else\n    {\n        go = new UnityEngine.GameObject(goName);\n        go.transform.position = position;\n    }\n}\nelse\n{\n    go = new UnityEngine.GameObject(goName);\n    go.transform.position = position;\n}\n\nvar typeText = string.IsNullOrEmpty(primitiveType) || primitiveType == \"None\" ? \"GameObject\" : primitiveType;\nreturn $\"Created {typeText} '{goName}' at position ({position.x}, {position.y}, {position.z})\";",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name of the GameObject",
+        "default": "GameObject"
+      },
+      "x": {
+        "type": "number",
+        "description": "X position",
+        "default": 0
+      },
+      "y": {
+        "type": "number",
+        "description": "Y position",
+        "default": 0
+      },
+      "z": {
+        "type": "number",
+        "description": "Z position",
+        "default": 0
+      },
+      "primitiveType": {
+        "type": "string",
+        "description": "Primitive type (Cube, Sphere, Cylinder, Capsule, Plane, Quad)",
+        "default": "None"
+      }
+    },
+    "required": [
+      "name"
+    ]
+  }
+}

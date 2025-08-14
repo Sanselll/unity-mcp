@@ -1,0 +1,21 @@
+{
+  "name": "find_object",
+  "description": "Find GameObjects in the scene by name pattern",
+  "queryTemplate": "using UnityEngine;\nusing System.Linq;\n\nvar searchName = \"{{objectName}}\";\nvar includeInactive = {{includeInactive}};\nvar objects = GameObject.FindObjectsOfType<GameObject>(includeInactive)\n    .Where(obj => obj.name.Contains(searchName, System.StringComparison.OrdinalIgnoreCase))\n    .ToArray();\n\nvar result = $\"Found {objects.Length} objects containing '{searchName}' (includeInactive: {includeInactive}):\";\nforeach (var obj in objects)\n{\n    result += $\"\\n- {obj.name} {(obj.activeSelf ? \"(Active)\" : \"(Inactive)\")} at ({obj.transform.position.x:F2}, {obj.transform.position.y:F2}, {obj.transform.position.z:F2})\";\n    \n    // Show parent if it has one\n    if (obj.transform.parent != null)\n    {\n        result += $\" [Parent: {obj.transform.parent.name}]\";\n    }\n}\n\nreturn result;",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "objectName": {
+        "type": "string",
+        "description": "Name or partial name of objects to find",
+        "default": ""
+      },
+      "includeInactive": {
+        "type": "boolean",
+        "description": "Include inactive GameObjects in search",
+        "default": false
+      }
+    },
+    "required": ["objectName"]
+  }
+}

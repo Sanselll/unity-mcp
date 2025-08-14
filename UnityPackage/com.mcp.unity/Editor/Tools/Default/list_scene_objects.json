@@ -1,0 +1,15 @@
+{
+  "name": "list_scene_objects",
+  "description": "List all GameObjects in the current scene",
+  "queryTemplate": "\nusing System.Text;\nusing System.Linq;\nvar scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();\nvar gameObjects = UnityEngine.Object.FindObjectsByType<UnityEngine.GameObject>(UnityEngine.FindObjectsSortMode.None);\n\nvar sb = new System.Text.StringBuilder();\nsb.AppendLine($\"Scene: {(string.IsNullOrEmpty(scene.name) ? \"Untitled\" : scene.name)}\");\nsb.AppendLine($\"Total GameObjects: {gameObjects.Length}\");\n\nif ({{includeDetails}})\n{\n    sb.AppendLine(\"\\nDetailed GameObject List:\");\n    foreach (var go in gameObjects)\n    {\n        sb.AppendLine($\"\\n• {go.name} {(go.activeSelf ? \"(Active)\" : \"(Inactive)\")}\");\n        sb.AppendLine($\"  Position: ({go.transform.position.x:F2}, {go.transform.position.y:F2}, {go.transform.position.z:F2})\");\n        \n        var components = go.GetComponents<UnityEngine.Component>()\n            .Where(c => c != null && c.GetType() != typeof(UnityEngine.Transform))\n            .Select(c => c.GetType().Name)\n            .ToArray();\n        \n        if (components.Length > 0)\n        {\n            sb.AppendLine($\"  Components: {string.Join(\", \", components)}\");\n        }\n    }\n}\nelse\n{\n    sb.AppendLine(\"\\nGameObjects:\");\n    foreach (var go in gameObjects)\n    {\n        sb.AppendLine($\"• {go.name}\");\n    }\n}\n\nreturn sb.ToString();",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "includeDetails": {
+        "type": "boolean",
+        "description": "Include position and component details",
+        "default": false
+      }
+    }
+  }
+}

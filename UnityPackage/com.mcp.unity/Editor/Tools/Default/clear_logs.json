@@ -1,0 +1,9 @@
+{
+  "name": "clear_logs",
+  "description": "Clear all Unity console log entries",
+  "queryTemplate": "\n// Access Unity's console logs using reflection\nvar logEntriesType = System.Type.GetType(\"UnityEditor.LogEntries, UnityEditor\");\n\nif (logEntriesType != null)\n{\n    // Get the Clear method\n    var clearMethod = logEntriesType.GetMethod(\"Clear\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n    \n    if (clearMethod != null)\n    {\n        // Clear the console\n        clearMethod.Invoke(null, null);\n        return \"Unity console cleared successfully\";\n    }\n    else\n    {\n        return \"Error: Could not find Clear method in LogEntries\";\n    }\n}\nelse\n{\n    return \"Error: Could not access Unity LogEntries type\";\n}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

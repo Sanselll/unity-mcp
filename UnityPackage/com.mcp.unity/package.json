@@ -1,0 +1,29 @@
+{
+  "name": "com.mcp.unity",
+  "version": "0.1.0",
+  "displayName": "Unity MCP Bridge",
+  "description": "Model Context Protocol bridge for Unity Editor - Enables Claude Code to interact with Unity",
+  "unity": "2020.3",
+  "keywords": [
+    "mcp",
+    "claude",
+    "ai",
+    "editor",
+    "automation"
+  ],
+  "author": {
+    "name": "Unity MCP",
+    "email": "",
+    "url": ""
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "samples": [
+    {
+      "displayName": "Example Scripts",
+      "description": "Sample MCP scripts for Unity",
+      "path": "Samples~/ExampleScripts"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "get_logs",
+  "description": "Get recent Unity console log entries",
+  "queryTemplate": "\nvar count = {{count}};\nvar includeErrors = bool.Parse(\"{{includeErrors}}\");\nvar includeWarnings = bool.Parse(\"{{includeWarnings}}\");\nvar includeLogs = bool.Parse(\"{{includeLogs}}\");\n\nvar entries = new System.Collections.Generic.List<string>();\n\n// Access Unity's actual console logs using reflection\nvar logEntriesType = System.Type.GetType(\"UnityEditor.LogEntries, UnityEditor\");\nvar logEntryType = System.Type.GetType(\"UnityEditor.LogEntry, UnityEditor\");\n\nif (logEntriesType != null && logEntryType != null)\n{\n    // Start getting entries\n    var startMethod = logEntriesType.GetMethod(\"StartGettingEntries\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n    var endMethod = logEntriesType.GetMethod(\"EndGettingEntries\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n    var getCountMethod = logEntriesType.GetMethod(\"GetCount\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n    var getEntryMethod = logEntriesType.GetMethod(\"GetEntryInternal\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n    \n    startMethod?.Invoke(null, null);\n    \n    var totalCount = (int)(getCountMethod?.Invoke(null, null) ?? 0);\n    var startIndex = Math.Max(0, totalCount - count);\n    \n    for (int i = startIndex; i < totalCount && entries.Count < count; i++)\n    {\n        var logEntry = System.Activator.CreateInstance(logEntryType);\n        var args = new object[] { i, logEntry };\n        getEntryMethod?.Invoke(null, args);\n        \n        // Get log entry fields\n        var messageField = logEntryType.GetField(\"message\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);\n        var modeField = logEntryType.GetField(\"mode\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);\n        var fileField = logEntryType.GetField(\"file\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);\n        var lineField = logEntryType.GetField(\"line\", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);\n        \n        var message = messageField?.GetValue(logEntry)?.ToString() ?? \"\";\n        var mode = (int)(modeField?.GetValue(logEntry) ?? 0);\n        var file = fileField?.GetValue(logEntry)?.ToString() ?? \"\";\n        var line = (int)(lineField?.GetValue(logEntry) ?? 0);\n        \n        // Determine log type from mode value\n        // Unity uses specific bits in the mode value:\n        // Regular Error: 0x804100 (bit 8 = 0x100), Compilation Error: 0x42800 (bit 11 = 0x800), Warning: 0x804200 (bit 9 = 0x200), Log: 0x804400 (bit 10 = 0x400)\n        string logType = \"LOG\";\n        if ((mode & 0x100) == 0x100 || (mode & 0x800) == 0x800) // Error has bit 8 OR bit 11 set\n        {\n            logType = \"ERROR\";\n            if (!includeErrors) continue;\n        }\n        else if ((mode & 0x200) == 0x200) // Warning has bit 9 set\n        {\n            logType = \"WARNING\";\n            if (!includeWarnings) continue;\n        }\n        else // Everything else is a log\n        {\n            logType = \"LOG\";\n            if (!includeLogs) continue;\n        }\n        \n        // Clean up the message - remove stack trace for cleaner output\n        var lines = message.Split('\\n');\n        var cleanMessage = lines[0]; // Just use the first line\n        \n        var location = !string.IsNullOrEmpty(file) && line > 0 ? $\" ({file}:{line})\" : \"\";\n        entries.Add($\"[{logType}] {cleanMessage}{location}\");\n    }\n    \n    endMethod?.Invoke(null, null);\n}\n\nif (entries.Count == 0)\n{\n    entries.Add(\"No console entries found matching the specified filters.\");\n    entries.Add($\"Filters: Errors={includeErrors}, Warnings={includeWarnings}, Logs={includeLogs}\");\n}\n\n// Reverse to show newest first\nentries.Reverse();\n\nreturn string.Join(\"\\n\", entries);",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "count": {
+        "type": "number",
+        "description": "Number of log entries to retrieve",
+        "default": 10
+      },
+      "includeErrors": {
+        "type": "boolean",
+        "description": "Include error messages",
+        "default": true
+      },
+      "includeWarnings": {
+        "type": "boolean",
+        "description": "Include warning messages",
+        "default": true
+      },
+      "includeLogs": {
+        "type": "boolean",
+        "description": "Include regular log messages",
+        "default": true
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+# Node
+node_modules/
+build/
+dist/
+*.log
+npm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Unity
+*.meta
+
+# Dynamic scripts (keep structure)
+src/scripts/custom/*
+!src/scripts/custom/.gitkeep
+
+# Environment
+.env
+.env.local

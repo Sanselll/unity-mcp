@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "unity": {
+      "command": "/opt/homebrew/bin/node",
+      "args": [
+        "/Users/sansel/Projects/UnityMCP/UnityPackage/com.mcp.unity/MCP~/build/index.js"
+      ]
+    }
+  }
+}

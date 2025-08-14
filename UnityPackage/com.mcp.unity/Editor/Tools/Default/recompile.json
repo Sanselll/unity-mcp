@@ -1,0 +1,9 @@
+{
+  "name": "recompile",
+  "description": "Trigger Unity script recompilation and refresh",
+  "queryTemplate": "\n// Trigger Unity script recompilation\ntry\n{\n    // Method 1: Refresh the AssetDatabase which triggers recompilation if needed\n    UnityEditor.AssetDatabase.Refresh();\n    \n    // Method 2: Try to use CompilationPipeline if available\n    var compilationPipelineType = System.Type.GetType(\"UnityEditor.Compilation.CompilationPipeline, UnityEditor\");\n    if (compilationPipelineType != null)\n    {\n        var methods = compilationPipelineType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);\n        var requestMethod = methods.FirstOrDefault(m => m.Name == \"RequestScriptCompilation\" && m.GetParameters().Length == 0);\n        \n        if (requestMethod != null)\n        {\n            requestMethod.Invoke(null, null);\n            return \"Script recompilation requested and AssetDatabase refreshed\";\n        }\n    }\n    \n    // Method 3: Import a dummy asset to trigger recompilation\n    UnityEditor.AssetDatabase.ImportAsset(\"Assets\", UnityEditor.ImportAssetOptions.ForceUpdate | UnityEditor.ImportAssetOptions.ImportRecursive);\n    \n    return \"AssetDatabase refreshed and forced update - recompilation triggered\";\n}\ncatch (System.Exception ex)\n{\n    // Fallback: Just refresh\n    UnityEditor.AssetDatabase.Refresh();\n    return \"AssetDatabase refreshed (basic recompilation trigger)\";\n}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

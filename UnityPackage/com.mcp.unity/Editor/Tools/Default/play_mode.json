@@ -1,0 +1,15 @@
+{
+  "name": "play_mode",
+  "description": "Control Unity Editor play mode (play, pause, stop)",
+  "queryTemplate": "\nvar action = \"{{action}}\";\n\ntry\n{\n    var currentState = UnityEditor.EditorApplication.isPlaying ? \"Playing\" : \"Stopped\";\n    var isPaused = UnityEditor.EditorApplication.isPaused;\n    \n    if (isPaused)\n    {\n        currentState = \"Paused\";\n    }\n    \n    switch (action.ToLower())\n    {\n        case \"play\":\n            if (!UnityEditor.EditorApplication.isPlaying)\n            {\n                UnityEditor.EditorApplication.isPlaying = true;\n                return $\"Play mode started (was: {currentState})\";\n            }\n            else if (isPaused)\n            {\n                UnityEditor.EditorApplication.isPaused = false;\n                return $\"Play mode resumed (was: Paused)\";\n            }\n            else\n            {\n                return \"Already in play mode\";\n            }\n            \n        case \"pause\":\n            if (UnityEditor.EditorApplication.isPlaying && !isPaused)\n            {\n                UnityEditor.EditorApplication.isPaused = true;\n                return \"Play mode paused\";\n            }\n            else if (isPaused)\n            {\n                return \"Already paused\";\n            }\n            else\n            {\n                return \"Not in play mode - cannot pause\";\n            }\n            \n        case \"stop\":\n            if (UnityEditor.EditorApplication.isPlaying)\n            {\n                UnityEditor.EditorApplication.isPlaying = false;\n                return $\"Play mode stopped (was: {currentState})\";\n            }\n            else\n            {\n                return \"Already stopped\";\n            }\n            \n        case \"toggle\":\n            if (!UnityEditor.EditorApplication.isPlaying)\n            {\n                UnityEditor.EditorApplication.isPlaying = true;\n                return \"Play mode started\";\n            }\n            else\n            {\n                UnityEditor.EditorApplication.isPlaying = false;\n                return \"Play mode stopped\";\n            }\n            \n        case \"status\":\n            return $\"Current state: {currentState}\";\n            \n        default:\n            return $\"Invalid action: '{action}'. Use 'play', 'pause', 'stop', 'toggle', or 'status'\";\n    }\n}\ncatch (System.Exception ex)\n{\n    return $\"Error controlling play mode: {ex.Message}\";\n}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "description": "Play mode action: 'play', 'pause', 'stop', 'toggle', or 'status'",
+        "default": "status"
+      }
+    }
+  }
+}

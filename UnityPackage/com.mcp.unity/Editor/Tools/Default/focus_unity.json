@@ -1,0 +1,9 @@
+{
+  "name": "focus_unity",
+  "description": "Bring Unity Editor window to foreground/focus",
+  "queryTemplate": "\n// Focus Unity Editor window\ntry\n{\n    // Method 1: Focus Scene View which brings Unity to foreground\n    var sceneView = UnityEditor.SceneView.lastActiveSceneView;\n    if (sceneView != null)\n    {\n        sceneView.Focus();\n        return \"Unity Editor focused via Scene View\";\n    }\n    \n    // Method 2: Get and focus any open EditorWindow\n    var allWindows = UnityEngine.Resources.FindObjectsOfTypeAll<UnityEditor.EditorWindow>();\n    if (allWindows != null && allWindows.Length > 0)\n    {\n        allWindows[0].Focus();\n        return $\"Unity Editor focused via {allWindows[0].GetType().Name}\";\n    }\n    \n    // Method 3: Repaint all views which can help bring Unity to foreground\n    UnityEditor.EditorApplication.ExecuteMenuItem(\"Window/General/Scene\");\n    return \"Unity Editor Scene window opened and focused\";\n}\ncatch (System.Exception ex)\n{\n    return $\"Error focusing Unity: {ex.Message}\";\n}",
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}
