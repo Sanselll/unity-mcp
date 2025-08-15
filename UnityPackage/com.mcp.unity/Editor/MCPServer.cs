@@ -272,8 +272,8 @@ namespace UnityMCP.Editor
                     error = new MCPError 
                     { 
                         code = -32000, // Server error
-                        message = "Unity is currently compiling scripts. Please try again in a moment.",
-                        data = new { status = "compiling" }
+                        message = "Unity is currently compiling scripts. Please try again in 10 seconds.",
+                        data = new { status = "compiling", retryAfter = 10 }
                     }
                 };
             }

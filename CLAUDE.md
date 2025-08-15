@@ -11,7 +11,7 @@ Unity MCP is a Unity Editor plugin that implements an MCP (Model Context Protoco
 The system consists of three main layers:
 1. **HTTP MCP Server** (`MCPServer.cs`) - Handles MCP JSON-RPC requests on port 9876
 2. **Dynamic Tool System** (`DynamicToolManager.cs`) - Manages and executes Unity tools defined in JSON files
-3. **C# Code Execution** (`DynamicCompiler.cs`) - Compiles and executes C# code queries dynamically
+3. **C# Code Execution** (`UnityDynamicCompiler.cs`) - Compiles and executes C# code queries dynamically
 
 Tools are stored as JSON files in:
 - `UnityPackage/com.mcp.unity/Editor/Tools/Default/` - Built-in tools (create_gameobject, get_logs, etc.)
@@ -61,8 +61,8 @@ claude mcp add --transport http unity http://localhost:9876
 - Thread-safe tool registry with locking
 - Supports both default and custom tool directories
 
-### DynamicCompiler.cs
-- Compiles C# code snippets using Roslyn
+### UnityDynamicCompiler.cs
+- Compiles C# code snippets using System.CodeDom.Compiler
 - Template substitution system for parameterized queries
 - Comprehensive using statements included automatically
 - Error handling with detailed compilation diagnostics
